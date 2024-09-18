@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace ContactManager.Models;
+namespace ASP.NETDefaultAuthenticationPOC.Models;
 
 
 public class Contact

@@ -1,9 +1,9 @@
-using ContactManager.Models;
+using ASP.NETDefaultAuthenticationPOC.Models;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace ContactManager.Authorization;
+namespace ASP.NETDefaultAuthenticationPOC.Authorization;
 
 
 public class AdminstratorAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Contact>

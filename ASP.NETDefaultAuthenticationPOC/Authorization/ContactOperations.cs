@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 
-namespace ContactManager.Authorization;
+namespace ASP.NETDefaultAuthenticationPOC.Authorization;
 
 
 public static class ContactOperations

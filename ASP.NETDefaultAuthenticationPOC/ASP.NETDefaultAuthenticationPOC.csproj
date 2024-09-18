@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	<PackageReference Include="Microsoft.EntityFramework" Version="6.0.0" />
+	<PackageReference Include="UmbracoCms.Core" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

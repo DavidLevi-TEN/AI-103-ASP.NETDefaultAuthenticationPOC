@@ -1,6 +1,9 @@
-using ContactManager.Authorization;
-using Microsoft.AspNetCore.Authorization;
+using ASP.NETDefaultAuthenticationPOC.Authorization;
+using ASP.NETDefaultAuthenticationPOC.Data;
+using ASP.NETDefaultAuthenticationPOC.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFramework;
 
@@ -25,12 +28,19 @@ builder.Services.AddControllers(config =>
     config.Filters.Add(new AuthorizeFilter(policy));
 });
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.EventsType = typeof(CustomCookieAuthentication);
+    });
+
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 });
 
-// Authorization handlers.
+// Authentication and Authorization handlers.
+builder.Services.AddScoped<CustomCookieAuthentication>();
 builder.Services.AddScoped<IAuthorizationHandler, OwnerAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ManagerAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, AdminstratorAuthorizationHandler>();
@@ -47,7 +57,7 @@ using (var scope = app.Services.CreateScope())
     // Set password with the Secret Manager tool.
     // dotnet user-secrets set SeedUserPW <pw>
 
-    var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW");
+    var testUserPw = builder.Configuration.GetValue<string>("SeedUserPW")!;
 
     await SeedData.Initialize(services, testUserPw);
 }
@@ -70,6 +80,16 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+var cookiePolicyOptions = new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Lax // The default value is Lax
+    // SameSiteMode.Lax allows for cross-origin authentication such as OAuth2
+    // SameSiteMode.Strict breaks OAuth2 but elevates security for apps without cross-origin authentication
+};
+
+app.UseCookiePolicy(cookiePolicyOptions);
+
 app.MapRazorPages();
+app.MapDefaultControllerRoute();
 
 app.Run();

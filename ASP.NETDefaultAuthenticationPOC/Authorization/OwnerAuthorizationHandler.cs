@@ -1,10 +1,10 @@
-using ContactManager.Models;
+using ASP.NETDefaultAuthenticationPOC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 
 
-namespace ContactManager.Authorization;
+namespace ASP.NETDefaultAuthenticationPOC.Authorization;
 
 
 public class OwnerAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Contact>

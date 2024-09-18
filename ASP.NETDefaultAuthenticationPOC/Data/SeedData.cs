@@ -1,11 +1,11 @@
-using ContactManager.Models;
+using ASP.NETDefaultAuthenticationPOC.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 
 // dotnet aspnet-codegenerator razorpage -m Contact -dc ApplicationDbContext -udl -outDir Pages\Contacts --referenceScriptLibraries
 
-namespace ContactManager.Data;
+namespace ASP.NETDefaultAuthenticationPOC.Data;
 
 
 public static class SeedData
