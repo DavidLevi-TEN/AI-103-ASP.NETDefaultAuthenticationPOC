@@ -20,7 +20,7 @@ public class CustomCookieAuthentication : CookieAuthenticationEvents
     {
         var userPrincipal = context.Principal;
 
-        var lastChanged = (from c in userPrincipal.Claims
+        var lastChanged = (from c in userPrincipal!.Claims
                            where c.Type == "LastChanged"
                            select c.Value).FirstOrDefault();
 

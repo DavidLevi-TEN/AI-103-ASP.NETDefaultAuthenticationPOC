@@ -32,12 +32,25 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.EventsType = typeof(CustomCookieAuthentication);
+    })
+    .AddJwtBearer(options =>
+    {
+        options.Audience = builder.Configuration["AzureAd:ClientId"];
+        options.Authority = $"{builder.Configuration["AzureAd:Instance"]}{builder.Configuration["AzureAd:TenantId"]}";
     });
+
+builder.Services.AddAuthorizationBuilder()
+    .SetFallbackPolicy(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
 
 builder.Services.AddAuthorization(options =>
 {
-    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    options.AddPolicy("Owner", policy => policy.Requirements.Add(new OwnerRequirement()));
+    options.AddPolicy("Manager", policy => policy.Requirements.Add(new ManagerRequirement()));
+    options.AddPolicy("Administrator", policy => policy.Requirements.Add(new AdministratorRequirement()));
 });
+
+builder.Services.AddAuthentication()
+    .AddIdentityServerJwt();
 
 // Authentication and Authorization handlers.
 builder.Services.AddScoped<CustomCookieAuthentication>();
@@ -78,6 +91,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseIdentityServer();
 app.UseAuthorization();
 
 var cookiePolicyOptions = new CookiePolicyOptions
