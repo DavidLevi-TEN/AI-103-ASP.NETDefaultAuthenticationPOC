@@ -28,6 +28,8 @@ builder.Services.AddControllers(config =>
     config.Filters.Add(new AuthorizeFilter(policy));
 });
 
+builder.Services.AddSingleton<IAuthorizationHandler, MinimumAgeAuthorizationHandler>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
