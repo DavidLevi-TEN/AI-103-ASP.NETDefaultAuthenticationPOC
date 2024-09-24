@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ASP.NETDefaultAuthenticationPOC.Data;
+using ASP.NETDefaultAuthenticationPOC.Models;
+using ASP.NETDefaultAuthenticationPOC.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using ContactManager.Data;
-using ContactManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using ContactManager.Authorization;
+using Microsoft.EntityFrameworkCore;
 
-namespace ContactManager.Pages.Contacts
+namespace ASP.NETDefaultAuthenticationPOC.Pages.Contacts
 {
     public class DetailsModel : BasePageModel
     {
@@ -38,12 +33,11 @@ namespace ContactManager.Pages.Contacts
 
             Contact = contact;
 
-            var isAuthorized = User.IsInRole(Constants.ContactManagersRole) ||
-                User.IsInRole(Constants.ContactAdminstratorsRole);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, Contact, ContactOperations.Read);
 
             var currentUserId = UserManager.GetUserId(User);
 
-            if (!isAuthorized && currentUserId != Contact.OwnerId && Contact.Status != ContactStatus.Approved)
+            if (!isAuthorized.Succeeded && currentUserId != Contact.OwnerId && Contact.Status != ContactStatus.Approved)
             {
                 return Forbid();
             }
@@ -73,7 +67,7 @@ namespace ContactManager.Pages.Contacts
 
             contact.Status = status;
             Context.Contact.Update(contact);
-            await Context.Contact.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }
@@ -112,12 +106,11 @@ namespace ContactManager.Pages.Contacts
                 return Challenge();
             }
 
-            var isAuthorized = User.IsInRole(Constants.ContactManagersRole) ||
-                               User.IsInRole(Constants.ContactAdministratorsRole);
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User, Contact, ContactOperations.Read);
 
             var currentUserId = UserManager.GetUserId(User);
 
-            if (!isAuthorized
+            if (!isAuthorized.Succeeded
                 && currentUserId != Contact.OwnerId
                 && Contact.Status != ContactStatus.Approved)
             {

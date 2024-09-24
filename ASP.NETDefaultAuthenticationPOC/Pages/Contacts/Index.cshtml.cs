@@ -1,12 +1,12 @@
-using ContactManager.Authorization;
-using ContactManager.Data;
-using ContactManager.Models;
+using ASP.NETDefaultAuthenticationPOC.Authorization;
+using ASP.NETDefaultAuthenticationPOC.Data;
+using ASP.NETDefaultAuthenticationPOC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace ContactManager.Pages.Contacts;
+namespace ASP.NETDefaultAuthenticationPOC.Pages.Contacts;
 
 
 public class IndexModel : BasePageModel
@@ -27,13 +27,12 @@ public class IndexModel : BasePageModel
     {
         var contacts = from c in Context.Contact select c;
 
-        var isAuthorized = User.IsInRole(Constants.ContactManagersRole) ||
-            User.IsInRole(Constants.ContactAdminstratorsRole);
+        var isAuthorized = await AuthorizationService.AuthorizeAsync(User, Context, ContactOperations.Read);
 
         var currentUserId = UserManager.GetUserId(User);
 
         // Only the owner and authorized users can see approved contacts
-        if (isAuthorized)
+        if (isAuthorized.Succeeded)
         {
             contacts = contacts.Where(c => c.Status == ContactStatus.Approved || c.OwnerId == currentUserId);
         }

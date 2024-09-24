@@ -1,12 +1,12 @@
-using ContactManager.Data;
-using ContactManager.Models;
-using ContactManager.Authorization;
+using ASP.NETDefaultAuthenticationPOC.Data;
+using ASP.NETDefaultAuthenticationPOC.Models;
+using ASP.NETDefaultAuthenticationPOC.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ContactManager.Pages.Contacts
+namespace ASP.NETDefaultAuthenticationPOC.Pages.Contacts
 {
     public class DeleteModel : BasePageModel
     {
@@ -62,7 +62,7 @@ namespace ContactManager.Pages.Contacts
             }
 
             Context.Contact.Remove(contact);
-            await Context.Contact.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Umbraco.Cms.Core.Security;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Umbraco.Cms.Core.Persistence.Repositories;
 
 
 namespace ASP.NETDefaultAuthenticationPOC.Cookies;
@@ -24,10 +25,15 @@ public class CustomCookieAuthentication : CookieAuthenticationEvents
                            where c.Type == "LastChanged"
                            select c.Value).FirstOrDefault();
 
-        if (string.IsNullOrEmpty(lastChanged) || !_respository.ValidateLastChanged(lastChanged))
+        if (lastChanged != null)
         {
-            context.RejectPrincipal();
-            await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var user = _respository.GetProfile(userPrincipal.Identity!.Name!);
+
+            if (user == null || user.GetType().ToString() != lastChanged)
+            {
+                context.RejectPrincipal();
+                await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
         }
     }
 }

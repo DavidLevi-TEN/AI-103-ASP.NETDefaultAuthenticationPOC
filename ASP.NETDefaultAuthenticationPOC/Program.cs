@@ -6,18 +6,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDbContext<ApplicationDbContext>();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddRazorPages();
 
@@ -47,13 +46,8 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Owner", policy => policy.Requirements.Add(new OwnerRequirement()));
-    options.AddPolicy("Manager", policy => policy.Requirements.Add(new ManagerRequirement()));
-    options.AddPolicy("Administrator", policy => policy.Requirements.Add(new AdministratorRequirement()));
+    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
 });
-
-builder.Services.AddAuthentication()
-    .AddIdentityServerJwt();
 
 // Authentication and Authorization handlers.
 builder.Services.AddScoped<CustomCookieAuthentication>();
@@ -80,7 +74,7 @@ using (var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
@@ -94,7 +88,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
-app.UseIdentityServer();
 app.UseAuthorization();
 
 var cookiePolicyOptions = new CookiePolicyOptions

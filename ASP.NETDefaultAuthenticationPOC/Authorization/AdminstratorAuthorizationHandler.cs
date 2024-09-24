@@ -20,7 +20,7 @@ public class AdminstratorAuthorizationHandler : AuthorizationHandler<OperationAu
         }
 
         // Adminstrators can do anything
-        if (context.User.IsInRole(Constants.ContactAdminstratorsRole))
+        if (context.User.IsInRole(Constants.ContactAdministratorsRole))
         {
             context.Succeed(requirement);
         }

@@ -40,7 +40,7 @@ public class OwnerAuthorizationHandler : AuthorizationHandler<OperationAuthoriza
 
         if (resource.OwnerId == _userManager.GetUserId(context.User))
         {
-            return context.Succeed(requirement);
+            context.Succeed(requirement);
         }
 
         return Task.CompletedTask;

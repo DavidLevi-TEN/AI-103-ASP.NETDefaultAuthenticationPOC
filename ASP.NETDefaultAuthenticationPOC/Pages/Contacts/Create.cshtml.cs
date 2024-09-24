@@ -1,11 +1,11 @@
-using ContactManager.Data;
-using ContactManager.Models;
-using ContactManager.Authorization;
+using ASP.NETDefaultAuthenticationPOC.Data;
+using ASP.NETDefaultAuthenticationPOC.Models;
+using ASP.NETDefaultAuthenticationPOC.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace ContactManager.Pages.Contacts
+namespace ASP.NETDefaultAuthenticationPOC.Pages.Contacts
 {
     public class CreateModel : BasePageModel
     {
@@ -45,7 +45,7 @@ namespace ContactManager.Pages.Contacts
             }
 
             Context.Contact.Add(Contact);
-            await Context.Contact.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

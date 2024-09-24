@@ -1,4 +1,5 @@
 using ASP.NETDefaultAuthenticationPOC.Models;
+using ASP.NETDefaultAuthenticationPOC.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
@@ -22,11 +23,11 @@ public static class SeedData
             // The admin user can do anything
 
             var adminID = await EnsureUser(serviceProvider, testUserPw, "admin@contoso.com");
-            await EnsureRole(serviceProvider, adminID, Constants.ContactAdministratorsRole);
+            await EnsureRole(serviceProvider, adminID, Authorization.Constants.ContactAdministratorsRole);
 
             // allowed user can create and edit contacts that they create
             var managerID = await EnsureUser(serviceProvider, testUserPw, "manager@contoso.com");
-            await EnsureRole(serviceProvider, managerID, Constants.ContactManagersRole);
+            await EnsureRole(serviceProvider, managerID, Authorization.Constants.ContactManagersRole);
 
             SeedDB(context, adminID);
         }

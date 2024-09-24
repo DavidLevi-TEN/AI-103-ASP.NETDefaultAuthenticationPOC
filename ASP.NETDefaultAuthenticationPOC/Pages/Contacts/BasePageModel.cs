@@ -1,10 +1,10 @@
-using ContactManager.Data;
+using ASP.NETDefaultAuthenticationPOC.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 
-namespace ContactManager.Pages.Contacts;
+namespace ASP.NETDefaultAuthenticationPOC.Pages.Contacts;
 
 
 public class BasePageModel : PageModel
