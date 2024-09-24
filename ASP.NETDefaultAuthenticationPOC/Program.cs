@@ -1,4 +1,5 @@
 using ASP.NETDefaultAuthenticationPOC.Authorization;
+using ASP.NETDefaultAuthenticationPOC.Authorization.AgeRequirement;
 using ASP.NETDefaultAuthenticationPOC.Data;
 using ASP.NETDefaultAuthenticationPOC.Cookies;
 using Microsoft.AspNetCore.Identity;
