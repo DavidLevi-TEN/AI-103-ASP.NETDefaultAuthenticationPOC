@@ -10,9 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("AppDb"));
 
-builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>() // Cookies are used by default
+builder.Services.AddAuthorization(); // < Add services to DI container and enable Identity
+builder.Services.AddIdentityApiEndpoints<IdentityUser>() // Activate < the Identity API
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Cookies are used by default
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -26,20 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapIdentityApi<IdentityUser>();
-
-app.MapPost("/logout", async (SignInManager<IdentityUser> manager, [FromBody] object empty) =>
-{
-    if (empty != null)
-    {
-        await manager.SignOutAsync();
-        return Results.Ok();
-    }
-
-    return Results.Unauthorized();
-})
-.WithOpenApi()
-.RequireAuthorization();
+app.MapIdentityApi<IdentityUser>(); // Map the routes for Identity API
 
 app.UseHttpsRedirection();
 
